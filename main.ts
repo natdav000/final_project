@@ -133,17 +133,6 @@ e e e e e e e e e e e e e e e e
 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 
 `
 }
-function can_Jump () {
-    if (placeHolder.isHittingTile(CollisionDirection.Bottom)) {
-        placeHolder.vy = -100
-    }
-}
-function jump () {
-	
-}
-function levels () {
-    scene.setTileMap(list[0])
-}
 function buildLevel () {
     placeHolder = sprites.create(img`
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
@@ -320,13 +309,24 @@ a 9 9 9 9 9 9 9 9 9 9 9 9 9 9 a
 a 9 9 9 9 9 9 9 9 9 9 9 9 9 9 a 
 `, true)
     scene.cameraFollowSprite(placeHolder)
-    placeHolder.setPosition(108, 4)
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     can_Jump()
 })
-function startLevel () {
+function jump () {
+	
+}
+function levels () {
     scene.setTileMap(list[0])
+}
+function can_Jump () {
+    if (placeHolder.isHittingTile(CollisionDirection.Bottom)) {
+        placeHolder.vy = -100
+    }
+}
+function startLevel (level: number) {
+    scene.setTileMap(list[level])
+    tiles.placeOnRandomTile(placeHolder, myTiles.tile4)
 }
 function GRAVITY () {
     placeHolder.ay = 100
