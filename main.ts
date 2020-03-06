@@ -136,6 +136,8 @@ e e e e e e e e e e e e e e e e
 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 
 `
 }
+// when player touches a static sprite changes the
+// level to the next 
 sprites.onOverlap(SpriteKind.Player, SpriteKind.static, function (sprite, otherSprite) {
     next_level += 1
     if (next_level < levelslist.length) {
@@ -144,6 +146,11 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.static, function (sprite, otherS
         game.over(true)
     }
 })
+function changeLevel () {
+	
+}
+// takes tiles from the array of levels and gives them
+// a different sprite
 function buildLevel () {
     scene.setBackgroundImage(img`
 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 
@@ -325,41 +332,49 @@ function buildLevel () {
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     can_Jump()
 })
+// sets the level to a image from the array as well as
+// puts the player on the white tile(spawn)
 function levels (Levels: number) {
     scene.setTileMap(levelslist[Levels])
     scene.placeOnRandomTile(placeHolder, 1)
 }
+// makes it so that the player can not jump more than
+// once without touching the ground
 function can_Jump () {
     if (placeHolder.isHittingTile(CollisionDirection.Bottom)) {
         placeHolder.vy = -100
     }
 }
+// gives the goal a sprite and places it on a blue
+// tile
 function spawngoal () {
     scene.placeOnRandomTile(sprites.create(img`
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . 8 8 8 8 8 8 8 8 . 
-. . . . . . . 8 5 5 5 5 5 5 8 . 
-. . . . . . . 8 5 5 5 5 5 5 8 . 
-. . . . . . . 8 5 5 5 5 5 5 8 . 
-. . . . . . . 8 8 8 8 8 8 8 8 . 
-. . . . . . . 8 . . . . . . . . 
-. . . . . . . 8 . . . . . . . . 
-. . . . . . . 8 . . . . . . . . 
-. . . . . . . 8 . . . . . . . . 
-. . . . . . . 8 . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
+3 4 4 4 4 4 4 3 3 4 4 4 4 4 4 3 
+4 3 4 4 4 4 4 3 3 4 4 4 4 4 3 4 
+4 4 3 4 4 4 4 3 3 4 4 4 4 3 4 4 
+4 4 4 3 4 4 4 3 3 4 4 4 3 4 4 4 
+4 4 4 4 3 4 4 3 3 4 4 3 4 4 4 4 
+4 4 4 4 4 3 4 3 3 4 3 4 4 4 4 4 
+4 4 4 4 4 4 3 3 3 3 4 4 4 4 4 4 
+3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 
+3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 
+4 4 4 4 4 4 3 3 3 3 4 4 4 4 4 4 
+4 4 4 4 4 3 4 3 3 4 3 4 4 4 4 4 
+4 4 4 4 3 4 4 3 3 4 4 3 4 4 4 4 
+4 4 4 3 4 4 4 3 3 4 4 4 3 4 4 4 
+4 4 3 4 4 4 4 3 3 4 4 4 4 3 4 4 
+4 3 4 4 4 4 4 3 3 4 4 4 4 4 3 4 
+3 4 4 4 4 4 4 3 3 4 4 4 4 4 4 3 
 `, SpriteKind.static), 8)
 }
+// pulls the player down
 function GRAVITY () {
     placeHolder.ay = 100
 }
 let next_level = 0
 let placeHolder: Sprite = null
 let levelslist: Image[] = []
+// blocks of the levels before sprites are applied 
 levelslist = [img`
 . . . . . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . . . . . 
@@ -383,11 +398,11 @@ f f f f f f f f f f f f f f f f f f f f
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . 7 7 7 . 
+. . . . . . . . 7 7 . . . . . . 
+1 . . 7 7 7 . . . . . . . . . . 
+. . . . . . . . . . . . . . . 8 
+f f f f f f f . . f f f f f f f 
 `, img`
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
@@ -446,6 +461,8 @@ controller.moveSprite(placeHolder, 100, 0)
 scene.cameraFollowSprite(placeHolder)
 buildLevel()
 levels(next_level)
+spawngoal()
+// "gravity" is  applies every 100 ms 
 game.onUpdateInterval(100, function () {
     GRAVITY()
 })
