@@ -1,6 +1,7 @@
 namespace SpriteKind {
     export const static = SpriteKind.create()
     export const jump = SpriteKind.create()
+    export const groundling = SpriteKind.create()
 }
 namespace myTiles {
     //% blockIdentity=images._tile
@@ -149,9 +150,36 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.static, function (sprite, otherS
         game.over(true)
     }
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.groundling, function (sprite, otherSprite) {
+    if (placeHolder.y < groundling.top) {
+        groundling.destroy()
+    } else {
+        info.changeLifeBy(-1)
+        groundling.destroy()
+    }
+})
 function spawnenenmy () {
-    for (let value of scene.getTilesByType(0)) {
-    	
+    for (let value of scene.getTilesByType(14)) {
+        groundling = sprites.create(img`
+. . . . . . . . . . . . . . . . 
+. . . . . . . . . . . . . . . . 
+. . . . . . . 2 2 . . . . . . . 
+. . . . . . 2 5 5 2 . . . . . . 
+. . . . . . 2 5 5 2 . . . . . . 
+. . . . . 2 5 5 5 5 2 . . . . . 
+. . . . . 2 5 2 5 5 2 . . . . . 
+. . . . 2 5 5 2 5 5 5 2 . . . . 
+. . . . 2 5 5 2 5 5 5 2 . . . . 
+. . . 2 5 5 5 2 5 5 5 5 2 . . . 
+. . 2 5 5 5 5 2 5 5 5 5 2 . . . 
+. . 2 5 5 5 5 2 5 5 5 5 5 2 . . 
+. 2 5 5 5 5 5 5 5 5 5 5 5 2 . . 
+. 2 5 5 5 5 5 2 5 5 5 5 5 5 2 . 
+2 5 5 5 5 5 5 5 5 5 5 5 5 5 2 . 
+2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 
+`, SpriteKind.groundling)
+        scene.place(value, groundling)
+        groundling.ay = 100
     }
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.jump, function (sprite, otherSprite) {
@@ -426,9 +454,11 @@ function spawngoal () {
 function GRAVITY () {
     placeHolder.ay = 100
 }
+let groundling: Sprite = null
 let next_level = 0
 let placeHolder: Sprite = null
 let levelslist: Image[] = []
+info.setLife(3)
 // blocks of the levels before sprites are applied
 levelslist = [img`
 . . . . . . . . . . . . . . . . . . . . 
@@ -439,7 +469,7 @@ levelslist = [img`
 . . . . . . . 7 7 7 . . . . . . . . . . 
 . . . . . . . . . . . . . . . . . . . . 
 1 . . 7 7 7 . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . 9 . . . . . 
+. . . . . . . . . . . e . . 9 . . . . . 
 f f f f f f f f f f f f f f f f f f f f 
 `, img`
 . . . . . . . . . . . . . . . . 
@@ -518,7 +548,17 @@ buildLevel()
 levels(next_level)
 spawngoal()
 jumpPad()
+spawnenenmy()
 // "gravity" is  applies every 100 ms
 game.onUpdateInterval(100, function () {
     GRAVITY()
+})
+// decides whether the groundling will move right or
+// left every second
+game.onUpdateInterval(1000, function () {
+    if (Math.percentChance(50)) {
+        groundling.vx = Math.randomRange(25, 76)
+    } else {
+        groundling.vx = Math.randomRange(-76, -25)
+    }
 })
